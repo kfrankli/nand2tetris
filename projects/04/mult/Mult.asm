@@ -15,8 +15,6 @@
 
   @i    // int i
   M=1   // i = 1
-//  @sum  // int sum
-//  M=0   // sum = 0
   @2
   M=0
 (LOOP)
