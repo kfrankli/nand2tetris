@@ -4,9 +4,56 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 
 public class Assembler {
+  public static HashMap<String,String> compAddressInstructionMap = new HashMap<String, String>();
+  public static HashMap<String,String> compComputeInstructionMap = new HashMap<String, String>();
   public static HashMap<String,Integer> predefinedSymbolsMap = new HashMap<String, Integer>();
 
   static {
+    /*
+     * Specified by section 6.2.2 Instructions, page 109
+     * a=0 == Address (A) Instruction
+     * a=1 == Compute (C) Instruction
+     *
+     * comp |                   | comp
+     * a=0  | c1 c2 c3 c4 c5 c6 | a=1
+     *  0   | 1  0  1  0  1  0  |
+     *  1   | 1  1  1  1  1  1  |
+     * -1   | 1  1  1  0  1  0  |
+     *  D   | 0  0  1  1  0  0  |
+     *  A   | 1  1  0  0  0  0  |   M
+     * !D   | 0  0  1  1  0  1  |
+     * !A   | 1  1  0  0  0  1  |  !M
+     * -D   | 0  0  1  1  1  1  |
+     * -A   | 1  1  0  0  1  1  |  -M
+     * D+1  | 0  1  1  1  1  1  |
+     * A+1  | 1  1  0  1  1  1  |  M+1
+     * D-1  | 0  0  1  1  1  0  |
+     * A-1  | 1  1  0  0  1  0  |  M-1
+     * D+A  | 0  0  0  0  1  0  |  D+M
+     * D-A  | 0  1  0  0  1  1  |  D-M
+     * A-D  | 0  0  0  1  1  1  |  M-D
+     * D&A  | 0  0  0  0  0  0  |  D&M
+     * D|A  | 0  1  0  1  0  1  |  D|M
+     */
+    compAddressInstructionMap.put("0","101010");
+    compAddressInstructionMap.put("1","111111");
+    compAddressInstructionMap.put("-1","111010");
+    compAddressInstructionMap.put("D","001100");
+    compAddressInstructionMap.put("A","110000");
+    compAddressInstructionMap.put("!D","001101");
+    compAddressInstructionMap.put("!A","110001");
+    compAddressInstructionMap.put("-D","001111");
+    compAddressInstructionMap.put("-A","110011");
+    compAddressInstructionMap.put("D+1","011111");
+    compAddressInstructionMap.put("A+1","110111");
+    compAddressInstructionMap.put("D-1","001110");
+    compAddressInstructionMap.put("A-1","110010");
+    compAddressInstructionMap.put("D+A","000010");
+    compAddressInstructionMap.put("D-A","010011");
+    compAddressInstructionMap.put("A-D","000111");
+    compAddressInstructionMap.put("D&A","000000");
+    compAddressInstructionMap.put("D|A","010101");
+
     /*
      * Specified by section 6.2.3 Symbols, page 110
      *
